@@ -3,12 +3,11 @@ author: mbround18
 description: Setup osxcross for rust/other compilation projects.
 inputs:
   osx-version:
-    description: 'Version of osx to use.'
+    description: "Version of osx to use."
     required: true
 
 #  Set CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS = "-C linker=x86_64-apple-darwin${version}-linker -C linker=x86_64-apple-darwin${version}-ar -C link-arg=-undefined -C link-arg=dynamic_lookup"
 # echo "{environment_variable_name}={value}" >> $GITHUB_ENV
-
 
 runs:
   using: "composite"
@@ -27,38 +26,30 @@ runs:
           exit 1
         fi
     - uses: ATiltedTree/setup-rust@v1
-    
     - shell: bash
       run: mkdir -p $GITHUB_ACTION_PATH/osxcross
-    
+
     - shell: bash
       run: |
-        sudo apt-get install -y -qq \
-          clang \
-          gcc \ 
-          g++ \
-          zlib1g-dev \ 
-          libmpc-dev \
-          libmpfr-dev \
-          libgmp-dev
-       git clone https://github.com/tpoechtrager/osxcross "${{ env.GITHUB_ACTION_PATH }}/osxcross"
-       wget -nc "https://github.com/joseluisq/macosx-sdks/releases/download/${{ inputs.osx-version }}/MacOSX${{ inputs.osx-version }}.sdk.tar.xz"
-       mv "./MacOSX${{ inputs.osx-version }}.sdk.tar.xz" "./${{ env.GITHUB_ACTION_PATH }}/osxcross/tarballs/"
-    
+        sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
+        git clone https://github.com/tpoechtrager/osxcross "${{ env.GITHUB_ACTION_PATH }}/osxcross"
+        wget -nc "https://github.com/joseluisq/macosx-sdks/releases/download/${{ inputs.osx-version }}/MacOSX${{ inputs.osx-version }}.sdk.tar.xz"
+        mv "./MacOSX${{ inputs.osx-version }}.sdk.tar.xz" "./${{ env.GITHUB_ACTION_PATH }}/osxcross/tarballs/"
+
     - uses: actions/cache@v3
-      with: 
+      with:
         key: ${{ runner.os }}-osxcross-${{ inputs.osx-version }}-${{ hashFiles("${{ env.GITHUB_ACTION_PATH }}/osxcross/tarballs/*") }}
         path: |
           ~/.cargo/registry
           ~/.cargo/git
-          ${{ env.GITHUB_ACTION_PATH }}/osxcross/targetfind files in 
+          ${{ env.GITHUB_ACTION_PATH }}/osxcross/targetfind files in
 
     - shell: bash
-      env: 
+      env:
         SDK_VERSION: "${{ inputs.osx-version }}"
         UNATTENDED: "yes"
       run: bash ./build.sh
-      
+
     - shell: bash
       run: |
         echo "${{ env.GITHUB_ACTION_PATH }}/osxcross/target/bin" >> $GITHUB_PATH
@@ -66,5 +57,3 @@ runs:
         AR_FILE="$(find "${{ env.GITHUB_ACTION_PATH }}/osxcross/target/bin" -name "x86_64-apple-darwin*-ar")"
         echo "Setting: CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\""
         echo "CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\"" >> $GITHUB_ENV
-        
-        
