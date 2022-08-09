@@ -70,6 +70,7 @@ runs:
 
 
     - uses: actions/cache@v3
+      id: cache
       with:
         key: ${{ runner.os }}-osxcross-${{ inputs.osx-version }}
         path: |
@@ -78,6 +79,7 @@ runs:
           ${{ steps.target.outputs.target }}
 
     - shell: bash
+      if: steps.cache.outputs.cache-hit != 'true'
       env:
         SDK_VERSION: "${{ inputs.osx-version }}"
         UNATTENDED: "yes"
