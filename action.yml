@@ -36,7 +36,7 @@ runs:
         sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
         echo "::endgroup::"
 
-        OSXCROSS_FOLDER="$(echo "$GITHUB_ACTION_PATH/osxcross" | sed 's/\.\/\/\///g')"
+        OSXCROSS_FOLDER="$(echo "$GITHUB_ACTION_PATH/osxcross" | sed 's/\.\/*//g')"
 
         echo "$OSXCROSS_FOLDER"
 
