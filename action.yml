@@ -6,9 +6,6 @@ inputs:
     description: "Version of osx to use."
     required: true
 
-#  Set CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS = "-C linker=x86_64-apple-darwin${version}-linker -C linker=x86_64-apple-darwin${version}-ar -C link-arg=-undefined -C link-arg=dynamic_lookup"
-# echo "{environment_variable_name}={value}" >> $GITHUB_ENV
-
 runs:
   using: "composite"
   steps:
@@ -25,7 +22,7 @@ runs:
           echo "Error!: Your system must be a linux based system! Try running this on ubuntu-latest."
           exit 1
         fi
-    # - uses: ATiltedTree/setup-rust@v1
+
     - shell: bash
       run: mkdir -p $GITHUB_ACTION_PATH/osxcross
 
@@ -57,6 +54,7 @@ runs:
         git clone https://github.com/tpoechtrager/osxcross "$OSXCROSS_FOLDER"
         echo "::endgroup::"
 
+          
 
         # Check setup for osx version
         echo "::group::Fetching macosx SDK"
