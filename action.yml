@@ -89,8 +89,8 @@ runs:
 
     - shell: bash
       run: |
+        echo "::group::Setting up Bin files"
         OSXCROSS_FOLDER="$(echo "$GITHUB_ACTION_PATH/osxcross" | sed 's/\.\/*//g')"
-        
         echo "OSXCROSS Folder = ${OSXCROSS_FOLDER}"
 
         if [ ! -d "$OSXCROSS_FOLDER/target/bin" ]; then
@@ -99,16 +99,20 @@ runs:
         else
           chmod +x $OSXCROSS_FOLDER/target/bin/*
         fi
+        echo "::endgroup::"
         
+        echo "::group::Finding Executables"
         echo "$OSXCROSS_FOLDER/target/bin" >> $GITHUB_PATH
-        
-        echo "Searching for 'linker'"
-        find "$OSXCROSS_FOLDER/target/bin" -name "x86_64-apple-darwin*-linker"
-        LINKER_FILE="$(!!)"
-        
-        echo "Searching for 'ar'"
-        find "$OSXCROSS_FOLDER/target/bin" -name "x86_64-apple-darwin*-ar"
-        AR_FILE="$(!!)"
+        findTarget() {
+          echo "Searching for $1"
+          local path=$(find "$OSXCROSS_FOLDER/target/bin" -name "$1")
+          echo "Found - $path"
+          echo "$path"
+        }
+
+        LINKER_FILE="$(findTarget "x86_64-apple-darwin*-linker")"
+        AR_FILE="$(findTarget "x86_64-apple-darwin*-ar")"
+        echo "::endgroup::"
 
         echo "Setting: CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\""
         echo "CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\"" >> $GITHUB_ENV
