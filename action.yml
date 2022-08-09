@@ -36,7 +36,7 @@ runs:
         sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
         echo "::endgroup::"
 
-        OSXCROSS_FOLDER="$(echo "$GITHUB_ACTION_PATH/osxcross" | sed 's/.\///')"
+        OSXCROSS_FOLDER="$(echo "$GITHUB_ACTION_PATH/osxcross" | sed 's/\.\/\/\///g')"
 
         echo "$OSXCROSS_FOLDER"
 
@@ -56,8 +56,6 @@ runs:
         wget -nc "https://github.com/joseluisq/macosx-sdks/releases/download/${{ inputs.osx-version }}/${FILE_NAME}" -O "$OSXCROSS_FOLDER/tarballs/${FILE_NAME}"
         echo "::endgroup::"
 
-
-        echo "Folder=${OSXCROSS_FOLDER}"
         echo "::set-output name=target::${OSXCROSS_FOLDER}/target"
 
 
