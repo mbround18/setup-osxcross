@@ -32,9 +32,9 @@ runs:
     - shell: bash
       run: |
         sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
-        git clone https://github.com/tpoechtrager/osxcross "${{ env.GITHUB_ACTION_PATH }}/osxcross"
+        git clone https://github.com/tpoechtrager/osxcross "${GITHUB_ACTION_PATH}/osxcross"
         wget -nc "https://github.com/joseluisq/macosx-sdks/releases/download/${{ inputs.osx-version }}/MacOSX${{ inputs.osx-version }}.sdk.tar.xz"
-        mv "./MacOSX${{ inputs.osx-version }}.sdk.tar.xz" "./${{ env.GITHUB_ACTION_PATH }}/osxcross/tarballs/"
+        mv "./MacOSX${{ inputs.osx-version }}.sdk.tar.xz" "./${GITHUB_ACTION_PATH}/osxcross/tarballs/"
 
     - uses: actions/cache@v3
       with:
