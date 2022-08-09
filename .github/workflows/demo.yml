@@ -4,6 +4,6 @@ on: [push]
 jobs:
   demo:
     runs-on: ubuntu-latest
-     steps:
+    steps:
       - uses: actions/checkout@v3
       - uses: ./
