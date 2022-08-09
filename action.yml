@@ -42,7 +42,7 @@ runs:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
-          ${{ env.GITHUB_ACTION_PATH }}/osxcross/targetfind files in
+          ${GITHUB_ACTION_PATH}/osxcross/targetfind files in
 
     - shell: bash
       env:
@@ -52,8 +52,8 @@ runs:
 
     - shell: bash
       run: |
-        echo "${{ env.GITHUB_ACTION_PATH }}/osxcross/target/bin" >> $GITHUB_PATH
-        LINKER_FILE="$(find "${{ env.GITHUB_ACTION_PATH }}/osxcross/target/bin" -name "x86_64-apple-darwin*-linker")"
-        AR_FILE="$(find "${{ env.GITHUB_ACTION_PATH }}/osxcross/target/bin" -name "x86_64-apple-darwin*-ar")"
+        echo "${GITHUB_ACTION_PATH}/osxcross/target/bin" >> $GITHUB_PATH
+        LINKER_FILE="$(find "${GITHUB_ACTION_PATH}/osxcross/target/bin" -name "x86_64-apple-darwin*-linker")"
+        AR_FILE="$(find "${GITHUB_ACTION_PATH}/osxcross/target/bin" -name "x86_64-apple-darwin*-ar")"
         echo "Setting: CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\""
         echo "CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\"" >> $GITHUB_ENV
