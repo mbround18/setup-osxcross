@@ -96,6 +96,8 @@ runs:
         if [ ! -d "$OSXCROSS_FOLDER/target/bin" ]; then
           echo "Error! Failed to find ${OSXCROSS_FOLDER}/target/bin folder!"
           exit 1
+        else
+          chmod +x $OSXCROSS_FOLDER/target/bin/*
         fi
         
         echo "$OSXCROSS_FOLDER/target/bin" >> $GITHUB_PATH
@@ -106,12 +108,12 @@ runs:
         find "$OSXCROSS_FOLDER/target/bin" -name "x86_64-apple-darwin*-ar"
         AR_FILE="$(find "$OSXCROSS_FOLDER/target/bin" -name "x86_64-apple-darwin*-ar")"
 
-        if [ ! -f "${LINKER_FILE}" ]; then 
+        if [[ ! -x "${LINKER_FILE}" ]]; then 
           echo "Error! Failed to find linker file at ${LINKER_FILE}"
           exit 1
         fi
 
-        if [ ! -f "${AR_FILE}" ]; then 
+        if [[ ! -x "${AR_FILE}" ]]; then 
           echo "Error! Failed to find ar file at ${AR_FILE}"
           exit 1
         fi
