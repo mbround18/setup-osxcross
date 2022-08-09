@@ -30,6 +30,7 @@ runs:
       run: mkdir -p $GITHUB_ACTION_PATH/osxcross
 
     - shell: bash
+      id: target
       run: |
         sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
         git clone https://github.com/tpoechtrager/osxcross "$GITHUB_ACTION_PATH/osxcross"
@@ -40,13 +41,16 @@ runs:
         # Check joseluisq/macosx-sdks for release
         wget -nc "https://github.com/joseluisq/macosx-sdks/releases/download/${{ inputs.osx-version }}/${FILE_NAME}" -O "$GITHUB_ACTION_PATH/osxcross/tarballs/${FILE_NAME}"
 
+        echo "::set-output name=target::$GITHUB_ACTION_PATH/osxcross/target"
+
+
     - uses: actions/cache@v3
       with:
         key: ${{ runner.os }}-osxcross-${{ inputs.osx-version }}
         path: |
           ~/.cargo/registry
           ~/.cargo/git
-          $GITHUB_ACTION_PATH/osxcross/targetfind files in
+          ${{ steps.target.outputs.target }}
 
     - shell: bash
       env:
