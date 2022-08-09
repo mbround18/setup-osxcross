@@ -25,7 +25,7 @@ runs:
           echo "Error!: Your system must be a linux based system! Try running this on ubuntu-latest."
           exit 1
         fi
-    - uses: ATiltedTree/setup-rust@v1
+    # - uses: ATiltedTree/setup-rust@v1
     - shell: bash
       run: mkdir -p $GITHUB_ACTION_PATH/osxcross
 
