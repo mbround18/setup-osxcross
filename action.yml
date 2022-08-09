@@ -32,6 +32,21 @@ runs:
     - shell: bash
       id: target
       run: |
+        repeat(){
+          for i in {1..90}; do echo -n "$1"; done
+        }
+
+        echo "::group::Disclaimer Click Here for Info"
+        echo ""
+        repeat "-"
+        echo ""
+        echo "The first time you run this it will take upwards of 9 minutes to compile. Subsequent builds are cached."
+        echo ""
+        repeat "-"
+        echo ""
+        echo "::endgroup::"
+
+
         echo "::group::Installing Deps"
         sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
         echo "::endgroup::"
@@ -44,7 +59,6 @@ runs:
 
 
         # Check setup for osx version
-
         echo "::group::Fetching macosx SDK"
         FILE_NAME="MacOSX${{ inputs.osx-version }}.sdk.tar.xz"
 
