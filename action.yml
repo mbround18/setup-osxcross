@@ -38,6 +38,10 @@ runs:
 
         OSXCROSS_FOLDER="$(echo "$GITHUB_ACTION_PATH/osxcross" | sed 's/.\///')"
 
+        echo "$OSXCROSS_FOLDER"
+
+        exit 1
+
         echo "::group::Cloning osxcross"
         git clone https://github.com/tpoechtrager/osxcross "$OSXCROSS_FOLDER"
         echo "::endgroup::"
