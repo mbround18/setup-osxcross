@@ -6,6 +6,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      
+      - uses: ATiltedTree/setup-rust
+        with:
+          targets: x86_64-apple-darwin
+          rust-version: nightly
+      
       - uses: ./
         with:
           osx-version: "12.3"
+      
+      - run: |
+          git clone https://github.com/mbround18/rs-simple-hello-world
+          cd rs-simple-hello-world
+          cargo build --release --target x86_64-apple-darwin          
+      
