@@ -1,0 +1,9 @@
+name: Demo Workflow
+on: [push]
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+     steps:
+      - uses: actions/checkout@v3
+      - uses: ./
