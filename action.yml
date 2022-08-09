@@ -5,8 +5,7 @@ inputs:
   osx-version:
     description: 'Version of osx to use.'
     required: true
- 
- 
+
 #  Set CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS = "-C linker=x86_64-apple-darwin${version}-linker -C linker=x86_64-apple-darwin${version}-ar -C link-arg=-undefined -C link-arg=dynamic_lookup"
 # echo "{environment_variable_name}={value}" >> $GITHUB_ENV
 
@@ -19,6 +18,10 @@ runs:
       run: |
         if [[ "$OSTYPE" == "linux-gnu"* ]]; then
           echo "Found linux based system, proceeding."
+          if [ -z "${{ inputs.osx-version }}" ]; then
+            echo "::error Osx Version required!"
+            exit 1
+          fi
         else
           echo "::error Your system must be a linux based system! Try running this on ubuntu-latest."
           exit 1
