@@ -29,3 +29,20 @@ Github Action for setting up osxcross in a github action.
 - name: Build Your Code
   run: cargo build --release --target x86_64-apple-darwin
 ```
+
+## ZLIB and C/++ compilations
+
+If you run into issues were you have zlib or have c as a dependenacy consider setting the following in your env.
+
+
+```sh
+# Make libz-sys (git2-rs -> libgit2-sys -> libz-sys) build as a statically linked lib
+# This prevents the host zlib from being linked
+export LIBZ_SYS_STATIC=1
+
+# Use Clang for C/C++ builds
+export CC=o64-clang
+export CXX=o64-clang++
+```
+
+
