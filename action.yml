@@ -38,7 +38,7 @@ runs:
 
     - uses: actions/cache@v3
       with:
-        key: ${{ runner.os }}-osxcross-${{ inputs.osx-version }}-${{ hashFiles("${{ env.GITHUB_ACTION_PATH }}/osxcross/tarballs/*") }}
+        key: ${{ runner.os }}-osxcross-${{ inputs.osx-version }}-${{ hashFiles( format("{0}/osxcross/tarballs/*", env.GITHUB_ACTION_PATH) ) }}
         path: |
           ~/.cargo/registry
           ~/.cargo/git
