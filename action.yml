@@ -103,7 +103,8 @@ runs:
         echo "::group::Finding Executables"
         echo "$OSXCROSS_FOLDER/target/bin" >> $GITHUB_PATH
         findTarget() {
-          echo "$(find "$OSXCROSS_FOLDER/target/bin" -name "$1")"
+          local file="$(find "$OSXCROSS_FOLDER/target/bin" -name "$1")"
+          echo "$(basename $file)"
         }
 
         LINKER_FILE="$(findTarget "x86_64-apple-darwin*-clang")"

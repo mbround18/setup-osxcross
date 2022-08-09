@@ -16,7 +16,11 @@ jobs:
         with:
           osx-version: "12.3"
 
-      - run: |
-          git clone https://github.com/mbround18/rs-simple-hello-world
-          cd rs-simple-hello-world
-          cargo build --release --target x86_64-apple-darwin
+      - name: Cloning Hello World
+        run: git clone https://github.com/mbround18/rs-simple-hello-world
+    
+      - name: Build Hello World
+        working_directory: ./rs-simple-hello-world 
+        run: cargo build --release --target x86_64-apple-darwin
+        
+          
