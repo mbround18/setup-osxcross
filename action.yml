@@ -18,11 +18,11 @@ runs:
         if [[ "$OSTYPE" == "linux-gnu"* ]]; then
           echo "Found linux based system, proceeding."
           if [ -z "${{ inputs.osx-version }}" ]; then
-            echo "::error Osx Version required!"
+            echo "Error!: Osx Version required!"
             exit 1
           fi
         else
-          echo "::error Your system must be a linux based system! Try running this on ubuntu-latest."
+          echo "Error!: Your system must be a linux based system! Try running this on ubuntu-latest."
           exit 1
         fi
     - uses: ATiltedTree/setup-rust@v1
