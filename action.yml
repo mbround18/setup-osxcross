@@ -50,6 +50,7 @@ runs:
 
 
         echo "::group::Installing Deps"
+        sudo apt-get update
         sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
         echo "::endgroup::"
 
