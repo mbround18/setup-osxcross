@@ -90,9 +90,20 @@ runs:
     - shell: bash
       run: |
         OSXCROSS_FOLDER="$(echo "$GITHUB_ACTION_PATH/osxcross" | sed 's/\.\/*//g')"
+        
         echo "OSXCROSS Folder = ${OSXCROSS_FOLDER}"
+
+        if [ ! -d "$OSXCROSS_FOLDER/target/bin" ]; then
+          echo "Error! Failed to find ${OSXCROSS_FOLDER}/target/bin folder!"
+          exit 1
+        fi
+        
         echo "$OSXCROSS_FOLDER/target/bin" >> $GITHUB_PATH
+        
+        find "$OSXCROSS_FOLDER/target/bin" -name "x86_64-apple-darwin*-linker"
         LINKER_FILE="$(find "$OSXCROSS_FOLDER/target/bin" -name "x86_64-apple-darwin*-linker")"
+        
+        find "$OSXCROSS_FOLDER/target/bin" -name "x86_64-apple-darwin*-ar"
         AR_FILE="$(find "$OSXCROSS_FOLDER/target/bin" -name "x86_64-apple-darwin*-ar")"
 
         if [ ! -f "${LINKER_FILE}" ]; then 
