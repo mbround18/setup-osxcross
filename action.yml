@@ -68,7 +68,6 @@ runs:
 
         echo "::set-output name=target::${OSXCROSS_FOLDER}/target"
 
-
     - uses: actions/cache@v3
       id: cache
       with:
@@ -100,14 +99,11 @@ runs:
           chmod +x $OSXCROSS_FOLDER/target/bin/*
         fi
         echo "::endgroup::"
-        
+
         echo "::group::Finding Executables"
         echo "$OSXCROSS_FOLDER/target/bin" >> $GITHUB_PATH
         findTarget() {
-          echo "Searching for $1"
-          local path=$(find "$OSXCROSS_FOLDER/target/bin" -name "$1")
-          echo "Found - $path"
-          echo "$path"
+          echo "$(find "$OSXCROSS_FOLDER/target/bin" -name "$1")"
         }
 
         LINKER_FILE="$(findTarget "x86_64-apple-darwin*-linker")"
