@@ -89,8 +89,21 @@ runs:
 
     - shell: bash
       run: |
-        echo "$GITHUB_ACTION_PATH/osxcross/target/bin" >> $GITHUB_PATH
-        LINKER_FILE="$(find "$GITHUB_ACTION_PATH/osxcross/target/bin" -name "x86_64-apple-darwin*-linker")"
-        AR_FILE="$(find "$GITHUB_ACTION_PATH/osxcross/target/bin" -name "x86_64-apple-darwin*-ar")"
+        OSXCROSS_FOLDER="$(echo "$GITHUB_ACTION_PATH/osxcross" | sed 's/\.\/*//g')"
+
+        echo "$OSXCROSS_FOLDER/target/bin" >> $GITHUB_PATH
+        LINKER_FILE="$(find "$OSXCROSS_FOLDER/target/bin" -name "x86_64-apple-darwin*-linker")"
+        AR_FILE="$(find "$OSXCROSS_FOLDER/target/bin" -name "x86_64-apple-darwin*-ar")"
+
+        if [ ! -f "${LINKER_FILE}" ]; then 
+          echo "Error! Failed to find linker file at ${LINKER_FILE}"
+          exit 1
+        fi
+
+        if [ ! -f "${AR_FILE}" ]; then 
+          echo "Error! Failed to find ar file at ${AR_FILE}"
+          exit 1
+        fi
+
         echo "Setting: CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\""
         echo "CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\"" >> $GITHUB_ENV
