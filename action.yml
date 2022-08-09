@@ -41,7 +41,7 @@ runs:
         # Check joseluisq/macosx-sdks for release
         wget -nc "https://github.com/joseluisq/macosx-sdks/releases/download/${{ inputs.osx-version }}/${FILE_NAME}" -O "$GITHUB_ACTION_PATH/osxcross/tarballs/${FILE_NAME}"
 
-        echo "::set-output name=target::$GITHUB_ACTION_PATH/osxcross/target"
+        echo "::set-output name=target::$(echo "$GITHUB_ACTION_PATH/osxcross/target" | sed 's/.\///')"
 
 
     - uses: actions/cache@v3
