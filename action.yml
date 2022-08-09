@@ -1,6 +1,7 @@
 name: "Setup osxcross"
 author: mbround18
 description: Setup osxcross for rust/other compilation projects.
+icon: aperture
 inputs:
   osx-version:
     description: "Version of osx to use."
