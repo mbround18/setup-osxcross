@@ -111,5 +111,8 @@ runs:
         AR_FILE="$(findTarget "x86_64-apple-darwin*-ar")"
         echo "::endgroup::"
 
+
+
         echo "Setting: CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\""
-        echo "CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C ar=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\"" >> $GITHUB_ENV
+        echo "CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER=${LINKER_FILE}" >> $GITHUB_ENV
+        echo "CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-Car=${AR_FILE} -Clink-arg=-undefined -Clink-arg=dynamic_lookup\"" >> $GITHUB_ENV
