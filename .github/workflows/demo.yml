@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: ATiltedTree/setup-rust
+      - uses: ATiltedTree/setup-rust@v1
         with:
           targets: x86_64-apple-darwin
           rust-version: nightly
