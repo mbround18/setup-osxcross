@@ -32,9 +32,10 @@ runs:
     - shell: bash
       run: |
         sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
-        git clone https://github.com/tpoechtrager/osxcross "${GITHUB_ACTION_PATH}/osxcross"
-        wget -nc "https://github.com/joseluisq/macosx-sdks/releases/download/${{ inputs.osx-version }}/MacOSX${{ inputs.osx-version }}.sdk.tar.xz"
-        mv "./MacOSX${{ inputs.osx-version }}.sdk.tar.xz" "./${GITHUB_ACTION_PATH}/osxcross/tarballs/"
+        git clone https://github.com/tpoechtrager/osxcross "$GITHUB_ACTION_PATH/osxcross"
+        
+        FILE_NAME="MacOSX${{ inputs.osx-version }}.sdk.tar.xz"
+        wget -nc "https://github.com/joseluisq/macosx-sdks/releases/download/${{ inputs.osx-version }}/${FILE_NAME}" -O "$GITHUB_ACTION_PATH/osxcross/tarballs/${FILE_NAME}"
 
     - uses: actions/cache@v3
       with:
@@ -42,7 +43,7 @@ runs:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
-          ${GITHUB_ACTION_PATH}/osxcross/targetfind files in
+          $GITHUB_ACTION_PATH/osxcross/targetfind files in
 
     - shell: bash
       env:
@@ -52,8 +53,8 @@ runs:
 
     - shell: bash
       run: |
-        echo "${GITHUB_ACTION_PATH}/osxcross/target/bin" >> $GITHUB_PATH
-        LINKER_FILE="$(find "${GITHUB_ACTION_PATH}/osxcross/target/bin" -name "x86_64-apple-darwin*-linker")"
-        AR_FILE="$(find "${GITHUB_ACTION_PATH}/osxcross/target/bin" -name "x86_64-apple-darwin*-ar")"
+        echo "$GITHUB_ACTION_PATH/osxcross/target/bin" >> $GITHUB_PATH
+        LINKER_FILE="$(find "$GITHUB_ACTION_PATH/osxcross/target/bin" -name "x86_64-apple-darwin*-linker")"
+        AR_FILE="$(find "$GITHUB_ACTION_PATH/osxcross/target/bin" -name "x86_64-apple-darwin*-ar")"
         echo "Setting: CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\""
         echo "CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\"" >> $GITHUB_ENV
