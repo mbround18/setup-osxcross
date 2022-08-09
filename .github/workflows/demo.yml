@@ -23,4 +23,9 @@ jobs:
         working-directory: ./rs-simple-hello-world 
         run: cargo build --release --target x86_64-apple-darwin
         
-          
+      - name: Grab Binary
+        working-directory: ./rs-simple-hello-world 
+        uses: actions/upload@v3
+        with: 
+          name: hello-world
+          path: ./target/x86_64-apple-darwin/release/hello_world
