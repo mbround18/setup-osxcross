@@ -80,6 +80,8 @@ runs:
           ~/.cargo/registry
           ~/.cargo/git
           ${{ steps.target.outputs.target }}
+          ${{ env.OSXCROSS_FOLDER }}/target/bi
+          
 
     - shell: bash
       if: steps.cache.outputs.cache-hit != 'true'
