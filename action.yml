@@ -93,10 +93,6 @@ runs:
         SDK_VERSION: "${{ inputs.osx-version }}"
         UNATTENDED: "yes"
       run: |
-        pwd
-        ls -lah 
-        echo "$GITHUB_ACTION_PATH/osxcross"
-        echo $OSXCROSS_FOLDER
         cd "$GITHUB_ACTION_PATH/osxcross"
         bash ./build.sh
 
