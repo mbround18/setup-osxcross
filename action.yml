@@ -14,6 +14,10 @@ inputs:
     description: "Base URL of where to find macOS SDKs"
     required: false
     default: "https://github.com/joseluisq/macosx-sdks/releases/download"
+  debug: 
+    description: "Enable osxcross debug output"
+    required: false
+    default: "0"
 
 runs:
   using: "composite"
@@ -94,7 +98,7 @@ runs:
         UNATTENDED: "yes"
       run: |
         cd "$GITHUB_ACTION_PATH/osxcross"
-        OCDEBUG=1 bash ./build.sh
+        OCDEBUG=${{ inputs.debug }} bash ./build.sh
 
     - shell: bash
       run: |
