@@ -10,6 +10,9 @@ inputs:
   osx-version:
     description: "Version of osx to use."
     required: true
+  sdk-url: 
+    description: "Base URL of where to find macOS SDKs"
+    required: true
 
 runs:
   using: "composite"
@@ -66,8 +69,8 @@ runs:
         echo "::group::Fetching macosx SDK"
         FILE_NAME="MacOSX${{ inputs.osx-version }}.sdk.tar.xz"
 
-        # Check joseluisq/macosx-sdks for release
-        wget -nc "https://github.com/joseluisq/macosx-sdks/releases/download/${{ inputs.osx-version }}/${FILE_NAME}" -O "$OSXCROSS_FOLDER/tarballs/${FILE_NAME}"
+        # Check sdk-url for release
+        wget -nc "${{ inputs.sdk-url }}/${{ inputs.osx-version }}/${FILE_NAME}" -O "$OSXCROSS_FOLDER/tarballs/${FILE_NAME}"
         echo "::endgroup::"
 
         echo "OSXCROSS_TARGET=${OSXCROSS_FOLDER}/target" >> $GITHUB_ENV
