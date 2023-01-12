@@ -68,7 +68,7 @@ runs:
 
         # Check setup for osx version
         echo "::group::Fetching macosx SDK"
-        FILE_NAME="MacOSX${{ inputs.osx-version }}.sdk.tar.xz"
+        FILE_NAME="MacOSX${{ inputs.osx-version }}.sdk.tar.xz" # *OSX*13.0*sdk*
 
         # Check sdk-url for release
         wget -nc "${{ inputs.sdk-url }}/${{ inputs.osx-version }}/${FILE_NAME}" -O "$OSXCROSS_FOLDER/tarballs/${FILE_NAME}"
@@ -94,7 +94,7 @@ runs:
         UNATTENDED: "yes"
       run: |
         cd "$GITHUB_ACTION_PATH/osxcross"
-        bash ./build.sh
+        OCDEBUG=1 bash ./build.sh
 
     - shell: bash
       run: |
