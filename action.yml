@@ -12,7 +12,8 @@ inputs:
     required: true
   sdk-url: 
     description: "Base URL of where to find macOS SDKs"
-    required: true
+    required: false
+    default: "https://github.com/joseluisq/macosx-sdks/releases/download"
 
 runs:
   using: "composite"
