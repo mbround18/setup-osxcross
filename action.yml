@@ -17,7 +17,7 @@ inputs:
   debug: 
     description: "Enable osxcross debug output"
     required: false
-    default: 0
+    default: false
 
 runs:
   using: "composite"
@@ -80,19 +80,24 @@ runs:
 
         echo "OSXCROSS_TARGET=${OSXCROSS_FOLDER}/target" >> $GITHUB_ENV
 
-    - uses: actions/cache@v3
-      id: cache
+    - name: Restore Cached Osxcross Build 
+      id: cache-restore
+    - uses: actions/cache/restore@v3.2.3
       with:
-        key: ${{ runner.os }}-osxcross-${{ inputs.osx-version }}
         path: |
           ~/.cargo/registry
           ~/.cargo/git
           ${{ env.OSXCROSS_TARGET }}
           ${{ env.OSXCROSS_FOLDER }}/target/bi
-          
+        key: ${{ runner.os }}-osxcross-${{ inputs.osx-version }}
+
+    - name: Configure Osxcross Build Debug Output
+      if: inputs.debug == 'true'
+      run: echo "OCDEBUG=1" >> $GITHUB_ENV
 
     - shell: bash
-      if: steps.cache.outputs.cache-hit != 'true'
+      id: build-osxcross
+      if: steps.cache-restore.outputs.cache-hit != 'true'
       env:
         SDK_VERSION: "${{ inputs.osx-version }}"
         UNATTENDED: "yes"
@@ -100,8 +105,20 @@ runs:
         cd "$GITHUB_ACTION_PATH/osxcross"
         pwd
         ls -lah 
-        OCDEBUG=${{ inputs.debug }} bash ./build.sh
+        bash ./build.sh
 
+    - name: Cache Osxcross Build 
+      if: steps.cache-restore.outputs.cache-hit != 'true'
+      id: cache-save
+    - uses: actions/cache/save@v3.2.3
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          ${{ env.OSXCROSS_TARGET }}
+          ${{ env.OSXCROSS_FOLDER }}/target/bi
+        key: ${{ runner.os }}-osxcross-${{ inputs.osx-version }}
+          
     - shell: bash
       run: |
         echo "::group::Setting up Bin files"
