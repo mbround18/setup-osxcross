@@ -17,7 +17,7 @@ inputs:
   debug: 
     description: "Enable osxcross debug output"
     required: false
-    default: "0"
+    default: 0
 
 runs:
   using: "composite"
@@ -72,7 +72,7 @@ runs:
 
         # Check setup for osx version
         echo "::group::Fetching macosx SDK"
-        FILE_NAME="MacOSX${{ inputs.osx-version }}.sdk.tar.xz" # *OSX*13.0*sdk*
+        FILE_NAME="MacOSX${{ inputs.osx-version }}.sdk.tar.xz"
 
         # Check sdk-url for release
         wget -nc "${{ inputs.sdk-url }}/${{ inputs.osx-version }}/${FILE_NAME}" -O "$OSXCROSS_FOLDER/tarballs/${FILE_NAME}"
@@ -98,6 +98,8 @@ runs:
         UNATTENDED: "yes"
       run: |
         cd "$GITHUB_ACTION_PATH/osxcross"
+        pwd
+        ls -lah 
         OCDEBUG=${{ inputs.debug }} bash ./build.sh
 
     - shell: bash
