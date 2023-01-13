@@ -91,7 +91,8 @@ runs:
           ${{ env.OSXCROSS_FOLDER }}/target/bi
         key: ${{ runner.os }}-osxcross-${{ inputs.osx-version }}
 
-    - name: Configure Osxcross Build Debug Output
+    - shell: bash 
+      name: Configure Osxcross Build Debug Output
       if: inputs.debug == 'true'
       run: echo "OCDEBUG=1" >> $GITHUB_ENV
 
