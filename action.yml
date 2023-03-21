@@ -51,7 +51,7 @@ runs:
 
         echo "::group::Installing Deps"
         sudo apt-get update
-        sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
+        sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev cmake libxml2-dev libssl-dev
         echo "::endgroup::"
 
         OSXCROSS_FOLDER="$(echo "$GITHUB_ACTION_PATH/osxcross" | sed 's/\.\/*//g')"
