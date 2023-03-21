@@ -50,8 +50,14 @@ runs:
 
 
         echo "::group::Installing Deps"
-        sudo apt-get update
-        sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
+        if hash sudo 2>/dev/null; then
+          sudo apt-get update
+          sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
+        else
+          apt-get update
+          apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev
+        fi
+
         echo "::endgroup::"
 
         OSXCROSS_FOLDER="$(echo "$GITHUB_ACTION_PATH/osxcross" | sed 's/\.\/*//g')"
@@ -103,13 +109,12 @@ runs:
           exit 1
         else
 
-    if hash sudo 2>/dev/null; then
-        sudo chmod +x $OSXCROSS_FOLDER/target/bin/*
-    else
-        chmod +x $OSXCROSS_FOLDER/target/bin/*
-    fi
-          
+        if hash sudo 2>/dev/null; then
+            sudo chmod +x $OSXCROSS_FOLDER/target/bin/*
+        else
+            chmod +x $OSXCROSS_FOLDER/target/bin/*
         fi
+          
         echo "::endgroup::"
 
         echo "::group::Finding Executables"
