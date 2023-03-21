@@ -102,7 +102,13 @@ runs:
           echo "Error! Failed to find ${OSXCROSS_FOLDER}/target/bin folder!"
           exit 1
         else
-          chmod +x $OSXCROSS_FOLDER/target/bin/*
+
+    if hash sudo 2>/dev/null; then
+        sudo chmod +x $OSXCROSS_FOLDER/target/bin/*
+    else
+        chmod +x $OSXCROSS_FOLDER/target/bin/*
+    fi
+          
         fi
         echo "::endgroup::"
 
