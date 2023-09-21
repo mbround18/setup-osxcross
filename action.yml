@@ -2,9 +2,8 @@ name: "Setup osxcross"
 author: mbround18
 description: Setup osxcross for rust/other compilation projects.
 branding:
-  icon: 'aperture'  
+  icon: 'aperture'
   color: 'green'
-
 
 inputs:
   osx-version:
@@ -34,29 +33,24 @@ runs:
     - shell: bash
       id: target
       run: |
-        repeat(){
-          for i in {1..90}; do echo -n "$1"; done
-        }
-
         echo "::group::Disclaimer Click Here for Info"
         echo ""
-        repeat "-"
+        echo "-------------------------------------------------------------------------------------------------------"
         echo ""
         echo "The first time you run this it will take upwards of 9 minutes to compile. Subsequent builds are cached."
         echo ""
-        repeat "-"
+        echo "-------------------------------------------------------------------------------------------------------"
         echo ""
         echo "::endgroup::"
-
 
         echo "::group::Installing Deps"
 
         if hash sudo 2>/dev/null; then
           sudo apt-get update
-          sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev  cmake libxml2-dev libssl-dev xz-utils
+          sudo apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev cmake libxml2-dev libssl-dev xz-utils
         else
           apt-get update
-          apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev  cmake libxml2-dev libssl-dev xz-utils
+          apt-get install -y -qq clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev cmake libxml2-dev libssl-dev xz-utils
         fi
         echo "::endgroup::"
 
@@ -65,8 +59,6 @@ runs:
         echo "::group::Cloning osxcross"
         git clone https://github.com/tpoechtrager/osxcross "$OSXCROSS_FOLDER"
         echo "::endgroup::"
-
-          
 
         # Check setup for osx version
         echo "::group::Fetching macosx SDK"
@@ -86,8 +78,7 @@ runs:
           ~/.cargo/registry
           ~/.cargo/git
           ${{ env.OSXCROSS_TARGET }}
-          ${{ env.OSXCROSS_FOLDER }}/target/bi
-          
+          ${{ env.OSXCROSS_FOLDER }}/target/bin
 
     - shell: bash
       if: steps.cache.outputs.cache-hit != 'true'
@@ -112,9 +103,9 @@ runs:
             sudo chmod +x $OSXCROSS_FOLDER/target/bin/*
           else
             chmod +x $OSXCROSS_FOLDER/target/bin/*
-          fi    
+          fi
         fi
-          
+
         echo "::endgroup::"
 
         echo "::group::Finding Executables"
@@ -124,10 +115,16 @@ runs:
           echo "$(basename $file)"
         }
 
-        LINKER_FILE="$(findTarget "x86_64-apple-darwin*-clang")"
-        AR_FILE="$(findTarget "x86_64-apple-darwin*-ar")"
+        LINKER_FILE_X86_64="$(findTarget "x86_64-apple-darwin*-clang")"
+        AR_FILE_X86_64="$(findTarget "x86_64-apple-darwin*-ar")"
+        LINKER_FILE_AARCH64="$(findTarget "aarch64-apple-darwin*-clang")"
+        AR_FILE_AARCH64="$(findTarget "aarch64-apple-darwin*-ar")"
         echo "::endgroup::"
 
-        echo "Setting: CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\""
-        echo "CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER=${LINKER_FILE}" >> $GITHUB_ENV
-        echo "CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=-Car=${AR_FILE},-Clink-arg=-undefined,-Clink-arg=dynamic_lookup" >> $GITHUB_ENV
+        echo "Setting: CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE_X86_64} -C linker=${LINKER_FILE_X86_64} -C link-arg=-undefined -C link-arg=dynamic_lookup\""
+        echo "CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER=${LINKER_FILE_X86_64}" >> $GITHUB_ENV
+        echo "CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=-Car=${AR_FILE_X86_64},-Clink-arg=-undefined,-Clink-arg=dynamic_lookup" >> $GITHUB_ENV
+
+        echo "Setting: CARGO_TARGET_AARCH64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE_AARCH64} -C linker=${LINKER_FILE_AARCH64} -C link-arg=-undefined -C link-arg=dynamic_lookup\""
+        echo "CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=${LINKER_FILE_AARCH64}" >> $GITHUB_ENV
+        echo "CARGO_TARGET_AARCH64_APPLE_DARWIN_RUSTFLAGS=-Car=${AR_FILE_AARCH64},-Clink-arg=-undefined,-Clink-arg=dynamic_lookup" >> $GITHUB_ENV
