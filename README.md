@@ -9,26 +9,29 @@ Github Action for setting up osxcross in a github action.
 ## Usage
 
 ```yaml
-# Setup Rust, use the x86_64-apple-darwin target but the rest can be customized.
-- uses: ATiltedTree/setup-rust@v1
-  with:
-    targets: x86_64-apple-darwin
-    rust-version: nightly
+# Checkout your code
+- name: Clone your Code
+  uses: actions/checkout@v7
 
-# Use the v1 of this action
-- uses: mbround18/setup-osxcross@v1
+# Install the apple-darwin rust targets you need.
+- name: Install Rust targets
+  run: rustup target add x86_64-apple-darwin aarch64-apple-darwin
+
+# Use this action
+- uses: mbround18/setup-osxcross@v3
   # This builds executables & sets env variables for rust to consume.
   with:
     osx-version: "12.3"
 
-# Checkout your code
-- name: Clone your Code
-  uses: actions/checkout@v3
-
 # Build your code for apple-darwin based release
-- name: Build Your Code
+- name: Build Your Code (Intel)
   run: cargo build --release --target x86_64-apple-darwin
+
+- name: Build Your Code (Apple Silicon)
+  run: cargo build --release --target aarch64-apple-darwin
 ```
+
+`osx-version` must point at an SDK that includes arm64 slices (macOS 11.0+, e.g. `12.3`) for the `aarch64-apple-darwin` target to be configured. Older SDKs will only get `x86_64-apple-darwin`, and the action will log a notice rather than failing.
 
 ## ZLIB and C/++ compilations
 
@@ -44,5 +47,7 @@ export LIBZ_SYS_STATIC=1
 export CC=o64-clang
 export CXX=o64-clang++
 ```
+
+`AR_x86_64_apple_darwin` / `AR_aarch64_apple_darwin` are set automatically for you, so `cc`/`cc-rs` based builds pick up the right `ar` without extra configuration.
 
 

@@ -2,7 +2,7 @@ name: "Setup osxcross"
 author: mbround18
 description: Setup osxcross for rust/other compilation projects.
 branding:
-  icon: 'aperture'  
+  icon: 'aperture'
   color: 'green'
 
 
@@ -66,7 +66,7 @@ runs:
         git clone https://github.com/tpoechtrager/osxcross "$OSXCROSS_FOLDER"
         echo "::endgroup::"
 
-          
+
 
         # Check setup for osx version
         echo "::group::Fetching macosx SDK"
@@ -78,7 +78,7 @@ runs:
 
         echo "OSXCROSS_TARGET=${OSXCROSS_FOLDER}/target" >> $GITHUB_ENV
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v6
       id: cache
       with:
         key: ${{ runner.os }}-osxcross-${{ inputs.osx-version }}
@@ -87,7 +87,7 @@ runs:
           ~/.cargo/git
           ${{ env.OSXCROSS_TARGET }}
           ${{ env.OSXCROSS_FOLDER }}/target/bi
-          
+
 
     - shell: bash
       if: steps.cache.outputs.cache-hit != 'true'
@@ -112,22 +112,43 @@ runs:
             sudo chmod +x $OSXCROSS_FOLDER/target/bin/*
           else
             chmod +x $OSXCROSS_FOLDER/target/bin/*
-          fi    
+          fi
         fi
-          
+
         echo "::endgroup::"
 
         echo "::group::Finding Executables"
         echo "$OSXCROSS_FOLDER/target/bin" >> $GITHUB_PATH
+
         findTarget() {
-          local file="$(find "$OSXCROSS_FOLDER/target/bin" -name "$1")"
-          echo "$(basename $file)"
+          local file="$(find "$OSXCROSS_FOLDER/target/bin" -name "$1" | head -n1)"
+          echo "$(basename "$file")"
         }
 
-        LINKER_FILE="$(findTarget "x86_64-apple-darwin*-clang")"
-        AR_FILE="$(findTarget "x86_64-apple-darwin*-ar")"
-        echo "::endgroup::"
+        # osxcross builds an aarch64-apple-darwin toolchain automatically when the
+        # SDK supports it (11.0+), alongside x86_64-apple-darwin. Configure whichever
+        # toolchains actually got built rather than assuming only x86_64.
+        configureTarget() {
+          local triple="$1"
+          local cargo_var="$(echo "$triple" | tr '[:lower:]' '[:upper:]' | tr '-' '_')"
+          local env_var="$(echo "$triple" | tr '-' '_')"
 
-        echo "Setting: CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=\"-C linker=${AR_FILE} -C linker=${LINKER_FILE} -C link-arg=-undefined -C link-arg=dynamic_lookup\""
-        echo "CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER=${LINKER_FILE}" >> $GITHUB_ENV
-        echo "CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS=-Car=${AR_FILE},-Clink-arg=-undefined,-Clink-arg=dynamic_lookup" >> $GITHUB_ENV
+          local linker="$(findTarget "${triple}*-clang")"
+          local ar="$(findTarget "${triple}*-ar")"
+
+          if [ -z "$linker" ]; then
+            echo "No toolchain found for ${triple}, skipping (this SDK version may not support it)."
+            return
+          fi
+
+          echo "Configured ${triple}: linker=${linker} ar=${ar}"
+          echo "CARGO_TARGET_${cargo_var}_LINKER=${linker}" >> $GITHUB_ENV
+          echo "CARGO_TARGET_${cargo_var}_RUSTFLAGS=-C link-arg=-undefined -C link-arg=dynamic_lookup" >> $GITHUB_ENV
+          if [ -n "$ar" ]; then
+            echo "AR_${env_var}=${ar}" >> $GITHUB_ENV
+          fi
+        }
+
+        configureTarget "x86_64-apple-darwin"
+        configureTarget "aarch64-apple-darwin"
+        echo "::endgroup::"
