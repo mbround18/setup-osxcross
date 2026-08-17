@@ -33,5 +33,5 @@ jobs:
         with:
           name: hello-world
           path: |
-            ./rs-simple-hello-world/target/x86_64-apple-darwin/release/hello_world
-            ./rs-simple-hello-world/target/aarch64-apple-darwin/release/hello_world
+            ./rs-simple-hello-world/target/x86_64-apple-darwin/release/rs-simple-hello-world
+            ./rs-simple-hello-world/target/aarch64-apple-darwin/release/rs-simple-hello-world
