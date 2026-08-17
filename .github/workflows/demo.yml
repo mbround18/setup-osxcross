@@ -15,7 +15,10 @@ jobs:
           osx-version: "12.3"
 
       - name: Cloning Hello World
-        run: git clone https://github.com/mbround18/rs-simple-hello-world
+        uses: actions/checkout@v7
+        with:
+          repository: mbround18/rs-simple-hello-world
+          path: rs-simple-hello-world
 
       - name: Build Hello World (x86_64)
         working-directory: ./rs-simple-hello-world
